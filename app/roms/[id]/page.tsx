@@ -1,10 +1,16 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { databaseRom } from '../../data'; // Memanggil data terpusat
+import { databaseRom } from '../../data';
 
-export default function DetailRomPage({ params }: { params: { id: string } }) {
-  const rom = databaseRom.find((item) => item.id === params.id);
+// 1. Tambahkan "async" dan "Promise" pada parameter
+export default async function DetailRomPage({ params }: { params: Promise<{ id: string }> }) {
+  
+  // 2. Tambahkan "await" untuk membaca ID dari URL (wajib di Next.js terbaru)
+  const resolvedParams = await params;
+  
+  // 3. Cari data berdasarkan ID yang sudah didapatkan
+  const rom = databaseRom.find((item) => item.id === resolvedParams.id);
 
   if (!rom) {
     return notFound();
@@ -20,7 +26,6 @@ export default function DetailRomPage({ params }: { params: { id: string } }) {
         </Link>
       </nav>
 
-      {/* ... (Isi konten di bawah sini sama persis seperti kode sebelumnya) ... */}
       <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-extrabold text-gray-900">{rom.namaRom} (Android {rom.versiAndroid})</h1>
